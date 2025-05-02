@@ -41,6 +41,4 @@ public abstract class Credit {
     }
 
     protected abstract boolean isTypeEligible();
-
-    public abstract double calculateLoan(double amount, int months);
 }

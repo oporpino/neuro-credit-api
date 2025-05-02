@@ -5,3 +5,8 @@ spring:
 server:
   port: 4000
   
+springdoc:
+  swagger-ui:
+    path: /swagger
+    operationsSorter: method
+    tagsSorter: alpha

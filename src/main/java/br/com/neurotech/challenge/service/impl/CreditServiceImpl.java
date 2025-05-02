@@ -15,8 +15,6 @@ import br.com.neurotech.challenge.service.CreditService;
 @Service
 public class CreditServiceImpl implements CreditService {
     private final ClientService clientService;
-    private static final int HATCH_MIN_AGE = 23;
-    private static final int HATCH_MAX_AGE = 49;
 
     public CreditServiceImpl(ClientService clientService) {
         this.clientService = clientService;

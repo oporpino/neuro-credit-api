@@ -1,39 +1,76 @@
-# Avaliação para admissão de Desenvolvedores para a Neurotech
-
-## Instruções
-
-- Realize o fork deste projeto para desenvolver a sua solução. Não serão aceitos commits diretamente para este repositório;
-- Após o desenvolvimento da sua solução, nos avise, enviando o link do seu projeto para que iniciemos a avaliação. **Não crie Pull Requests!**
-- A solução deve ser entregue em um prazo máximo de 3 dias. 
+# Neurotech Credit API
 
 ## Descrição
+API para avaliação de crédito para financiamento de veículos, desenvolvida como parte do desafio técnico da Neurotech.
 
-Trata-se de um projeto que avalia e aplica modalidades diferentes de crédito a clientes PF, de acordo com critérios específicos. As modalidades diferentes de crédito estão descritas a seguir:
+## Tecnologias Utilizadas
+- Java 17
+- Spring Boot 3.2.3
+- Maven
+- JUnit 5
+- Swagger UI (OpenAPI 3)
 
--   Crédito com Juros fixos: Aplicado a clientes com idade entre 18 e 25 anos, independente de renda. Taxa de 5% a.a
--   Crédito com Juros variáveis: Aplicado a clientes com idade entre 21 e 65 anos, com renda entre R$ 5000,00 e R$ 15000,00.
--   Crédito Consignado: Aplicado a clientes acima de 65 anos, independente de renda.
+## Funcionalidades
+- Cadastro de clientes
+- Avaliação de crédito para diferentes modelos de veículos (Hatch e SUV)
+- Diferentes tipos de crédito (Fixo, Variável e Consignado)
+- Documentação da API com Swagger UI
 
-O projeto deve ser implantado como uma API RESTful, utilizando a linguagem Java e o framework Springboot. Atentar para implementações típicas de uma API RESTful, como códigos HTTP para cada tipo de endpoint, validação de dados, Documentação utilizando Swagger, e também testes automáticos para os endpoints implementados.
+## Requisitos
+- Java 17 ou superior
+- Maven 3.8 ou superior
 
-De maneira obrigatória, os seguintes endpoints devem ser implementados:
+## Como Executar
+1. Clone o repositório
+2. Execute o comando `./mvnw spring-boot:run`
+3. Acesse a API em `http://localhost:4000`
+4. Acesse a documentação Swagger em `http://localhost:4000/swagger`
 
--   Endpoint para cadastro de clientes: Deve receber Informações como Nome, idade, renda. Como retorno, uma entrada no header da resposta contendo a URL que identifica o cliente (Ex: [http://localhost/api/client/050](http://localhost/api/client/050)). O nome do header deve ser “Location”.
-    
--   Endpoint para retornar os dados do cliente de acordo com seu ID, indicado na URL (Ex: [http://localhost/api/client/050](http://localhost/api/client/050)). O retorno deve ser um objeto JSON contendo os dados do cliente. Por exemplo:
+## Endpoints
 
+### Clientes
+- `POST /api/client` - Cadastra um novo cliente
+- `GET /api/client/{id}` - Consulta um cliente pelo ID
+
+### Crédito
+- `GET /api/credit/{clientId}/{vehicleModel}` - Verifica a elegibilidade de um cliente para um modelo de veículo
+- `GET /api/credit/clients/hatch` - Lista os clientes elegíveis para veículos Hatch
+
+## Tipos de Crédito
+
+### Crédito Fixo
+- Idade: 18 a 25 anos
+- Renda: R$ 5.000,00 a R$ 15.000,00
+- Taxa de juros: 2% ao ano
+
+### Crédito Variável
+- Idade: 21 a 65 anos
+- Renda: R$ 5.000,00 a R$ 15.000,00
+- Taxa de juros: 3% ao ano
+- Fator de risco: 1,5% para valores acima de R$ 10.000,00
+
+### Crédito Consignado
+- Idade: 65 anos ou mais
+- Renda: R$ 5.000,00 a R$ 15.000,00
+- Taxa de juros: 3% ao ano
+
+## Regras de Elegibilidade por Modelo de Veículo
+
+### Hatch
+- Idade: 18 a 65 anos
+- Renda: R$ 5.000,00 a R$ 15.000,00
+
+### SUV
+- Idade: 21 a 65 anos
+- Renda: R$ 8.000,00 a R$ 15.000,00
+
+## Testes
+Execute os testes com o comando:
+```bash
+./mvnw test
 ```
-{ 
-  "Name": "Bob",
-  "Age": 40,
-  "Income": 10000
-}
-```
--   Endpoint para definir se um determinado cliente está apto a oferecer um crédito automotivo para determinado modelo de veículo.
-    -   Hatch: Renda entre R$ 5000,00 e R$15000,00.
-    -   SUV: Renda acima de R$8000,00 e idade superior a 20 anos.
-    
 
-Como adicional, mas não obrigatório, implemente um endpoint para se determinar todos os clientes entre 23 e 49 anos que possuem Crédito com juros fixos e estão aptos a adquirirem crédito automotivo para veículos do tipo Hatch. O objeto de retorno deve conter uma lista com o nome e a renda de cada um destes clientes.
-
-Boa sorte!
+## Documentação da API
+A documentação completa da API está disponível através do Swagger UI em:
+- Swagger UI: http://localhost:4000/swagger
+- OpenAPI JSON: http://localhost:4000/v3/api-docs
