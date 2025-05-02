@@ -4,6 +4,10 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import br.com.neurotech.challenge.entity.NeurotechClient;
 import br.com.neurotech.challenge.entity.VehicleModel;
 import br.com.neurotech.challenge.service.CreditService;
 
@@ -59,4 +64,35 @@ public class CreditControllerTest {
         mockMvc.perform(get("/api/credit/{clientId}/{vehicleModel}", clientId, invalidVehicleModel))
                 .andExpect(status().isBadRequest());
     }
-} 
+
+    @Test
+    void testGetEligibleClientsForHatch() throws Exception {
+        // Given
+        NeurotechClient client1 = new NeurotechClient();
+        client1.setId("client1");
+        client1.setName("John Doe");
+        client1.setAge(25);
+        client1.setIncome(10000.0);
+
+        NeurotechClient client2 = new NeurotechClient();
+        client2.setId("client2");
+        client2.setName("Jane Smith");
+        client2.setAge(30);
+        client2.setIncome(12000.0);
+
+        List<NeurotechClient> eligibleClients = Arrays.asList(client1, client2);
+        when(creditService.findEligibleClientsForHatch()).thenReturn(eligibleClients);
+
+        // When/Then
+        mockMvc.perform(get("/api/credit/clients/hatch"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value("client1"))
+                .andExpect(jsonPath("$[0].name").value("John Doe"))
+                .andExpect(jsonPath("$[0].age").value(25))
+                .andExpect(jsonPath("$[0].income").value(10000.0))
+                .andExpect(jsonPath("$[1].id").value("client2"))
+                .andExpect(jsonPath("$[1].name").value("Jane Smith"))
+                .andExpect(jsonPath("$[1].age").value(30))
+                .andExpect(jsonPath("$[1].income").value(12000.0));
+    }
+}
