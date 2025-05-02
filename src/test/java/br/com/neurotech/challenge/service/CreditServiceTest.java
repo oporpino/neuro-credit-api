@@ -1,8 +1,12 @@
 package br.com.neurotech.challenge.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
+
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -165,5 +169,49 @@ public class CreditServiceTest {
         // When/Then
         assertFalse(creditService.checkCredit(clientId, VehicleModel.HATCH));
         assertFalse(creditService.checkCredit(clientId, VehicleModel.SUV));
+    }
+
+    @Test
+    void testFindEligibleClientsForHatch() {
+        // Given
+        NeurotechClient eligibleClient1 = new NeurotechClient();
+        eligibleClient1.setId("client1");
+        eligibleClient1.setName("John Doe");
+        eligibleClient1.setAge(25);
+        eligibleClient1.setIncome(10000.0);
+
+        NeurotechClient eligibleClient2 = new NeurotechClient();
+        eligibleClient2.setId("client2");
+        eligibleClient2.setName("Jane Smith");
+        eligibleClient2.setAge(30);
+        eligibleClient2.setIncome(12000.0);
+
+        NeurotechClient ineligibleClient1 = new NeurotechClient();
+        ineligibleClient1.setId("client3");
+        ineligibleClient1.setName("Bob Wilson");
+        ineligibleClient1.setAge(22);
+        ineligibleClient1.setIncome(4000.0);
+
+        NeurotechClient ineligibleClient2 = new NeurotechClient();
+        ineligibleClient2.setId("client4");
+        ineligibleClient2.setName("Alice Brown");
+        ineligibleClient2.setAge(50);
+        ineligibleClient2.setIncome(10000.0);
+
+        List<NeurotechClient> allClients = Arrays.asList(
+            eligibleClient1, eligibleClient2, ineligibleClient1, ineligibleClient2
+        );
+
+        when(clientService.getAll()).thenReturn(allClients);
+
+        // When
+        List<NeurotechClient> eligibleClients = creditService.findEligibleClientsForHatch();
+
+        // Then
+        assertEquals(2, eligibleClients.size());
+        assertTrue(eligibleClients.contains(eligibleClient1));
+        assertTrue(eligibleClients.contains(eligibleClient2));
+        assertFalse(eligibleClients.contains(ineligibleClient1));
+        assertFalse(eligibleClients.contains(ineligibleClient2));
     }
 } 

@@ -1,5 +1,8 @@
 package br.com.neurotech.challenge.service.impl;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 
 import br.com.neurotech.challenge.entity.CreditType;
@@ -27,27 +30,39 @@ public class CreditServiceImpl implements CreditService {
         int age = client.getAge();
         double income = client.getIncome();
 
-        // First check if client is eligible for any credit type
         if (age < CreditType.FIXED_INTEREST.getMinAge()) {
             return false; 
         }
 
-        // Check vehicle-specific requirements
         if (VehicleModel.HATCH.equals(model)) {
-            // For Hatch, client must be eligible for Variable Interest Credit
+            
             return age >= CreditType.VARIABLE_INTEREST.getMinAge() && 
                    age <= CreditType.VARIABLE_INTEREST.getMaxAge() &&
                    income >= CreditType.VARIABLE_INTEREST.getMinIncome() &&
                    income <= CreditType.VARIABLE_INTEREST.getMaxIncome();
         } else if (VehicleModel.SUV.equals(model)) {
-            // For SUV, client must be eligible for Variable Interest Credit and be over 20
+            
             return age > 20 && 
                    age >= CreditType.VARIABLE_INTEREST.getMinAge() && 
                    age <= CreditType.VARIABLE_INTEREST.getMaxAge() &&
-                   income >= 8000.0; // SUV requires higher income
+                   income >= 8000.0; // TODO: SUV requires higher income extract to constant
         }
 
         return false;
     }
 
+    @Override
+    public List<NeurotechClient> findEligibleClientsForHatch() {
+        return clientService.getAll().stream()
+            .filter(client -> {
+                int age = client.getAge();
+                double income = client.getIncome();
+                
+                return age >= 23 && 
+                       age <= 49 && 
+                       income >= CreditType.VARIABLE_INTEREST.getMinIncome() && 
+                       income <= CreditType.VARIABLE_INTEREST.getMaxIncome();
+            })
+            .collect(Collectors.toList());
+    }
 } 

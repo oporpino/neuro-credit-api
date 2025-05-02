@@ -1,7 +1,7 @@
 package br.com.neurotech.challenge.service.impl;
 
+import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.stereotype.Service;
@@ -17,13 +17,17 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public String save(NeurotechClient client) {
-        String id = UUID.randomUUID().toString();
-        clients.put(id, client);
-        return id;
+        clients.put(client.getId(), client);
+        return client.getId();
     }
 
     @Override
     public NeurotechClient get(String id) {
         return clients.get(id);
+    }
+
+    @Override
+    public List<NeurotechClient> getAll() {
+        return List.copyOf(clients.values());
     }
 } 

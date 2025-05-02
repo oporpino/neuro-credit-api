@@ -1,7 +1,10 @@
 package br.com.neurotech.challenge.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
+import br.com.neurotech.challenge.entity.NeurotechClient;
 import br.com.neurotech.challenge.entity.VehicleModel;
 
 @Service
@@ -12,5 +15,7 @@ public interface CreditService {
 	 * para um determinado modelo de veículo
 	 */
 	boolean checkCredit(String clientId, VehicleModel model);
+	
+	List<NeurotechClient> findEligibleClientsForHatch();
 	
 }
