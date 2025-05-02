@@ -3,7 +3,7 @@ spring:
     name: neuro-credit-api
 
 server:
-  port: 4000
+  port: ${SERVER_PORT:4000}
   
 springdoc:
   swagger-ui:

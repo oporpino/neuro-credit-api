@@ -46,22 +46,16 @@ API para avaliação de crédito para financiamento de veículos, desenvolvida c
 ### Crédito Variável
 - Idade: 21 a 65 anos
 - Renda: R$ 5.000,00 a R$ 15.000,00
-- Taxa de juros: 3% ao ano
-- Fator de risco: 1,5% para valores acima de R$ 10.000,00
 
 ### Crédito Consignado
 - Idade: 65 anos ou mais
-- Renda: R$ 5.000,00 a R$ 15.000,00
-- Taxa de juros: 3% ao ano
 
 ## Regras de Elegibilidade por Modelo de Veículo
 
 ### Hatch
-- Idade: 18 a 65 anos
 - Renda: R$ 5.000,00 a R$ 15.000,00
 
 ### SUV
-- Idade: 21 a 65 anos
 - Renda: R$ 8.000,00 a R$ 15.000,00
 
 ## Testes
