@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ChallengeJavaDeveloperApplication {
+public class NeuroCreditApiApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(ChallengeJavaDeveloperApplication.class, args);
-	}
+  public static void main(String[] args) {
+    SpringApplication.run(NeuroCreditApiApplication.class, args);
+  }
 
 }

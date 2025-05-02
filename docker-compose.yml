@@ -1,0 +1,16 @@
+
+services:
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "4000:4000"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    networks:
+      - main
+
+networks:
+  main:
+    driver: bridge

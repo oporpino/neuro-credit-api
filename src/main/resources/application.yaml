@@ -1,6 +1,7 @@
 spring:
   application:
-    name: challenge-java-developer
+    name: neuro-credit-api
 
 server:
-  port: 5000
+  port: 4000
+  
