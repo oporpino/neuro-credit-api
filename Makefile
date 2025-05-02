@@ -58,8 +58,9 @@ docker.server.shell:
 
 ### Run tests on server container
 docker.server.test:
-	docker compose exec server mvn test
-
+	docker compose build server 
+	docker compose run --rm server mvn clean package
+	docker compose run --rm server mvn test
 
 ## [help] Commands to help -------------------------------------------------------------------------------------------------
 ### help: Exibe esta mensagem de ajuda
