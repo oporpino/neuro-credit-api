@@ -14,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import br.com.neurotech.challenge.dto.ClientDTO;
 import br.com.neurotech.challenge.entity.NeurotechClient;
 import br.com.neurotech.challenge.entity.VehicleModel;
 import br.com.neurotech.challenge.service.impl.CreditServiceImpl;
@@ -199,19 +200,22 @@ public class CreditServiceTest {
         ineligibleClient2.setIncome(10000.0);
 
         List<NeurotechClient> allClients = Arrays.asList(
-            eligibleClient1, eligibleClient2, ineligibleClient1, ineligibleClient2
-        );
+                eligibleClient1, eligibleClient2, ineligibleClient1, ineligibleClient2);
 
         when(clientService.getAll()).thenReturn(allClients);
 
         // When
-        List<NeurotechClient> eligibleClients = creditService.findEligibleClientsForHatch();
+        List<ClientDTO> eligibleClients = creditService.findEligibleClientsForHatch();
 
         // Then
         assertEquals(2, eligibleClients.size());
-        assertTrue(eligibleClients.contains(eligibleClient1));
-        assertTrue(eligibleClients.contains(eligibleClient2));
-        assertFalse(eligibleClients.contains(ineligibleClient1));
-        assertFalse(eligibleClients.contains(ineligibleClient2));
+
+        ClientDTO dto1 = eligibleClients.get(0);
+        assertEquals("John Doe", dto1.getName());
+        assertEquals(10000.0, dto1.getIncome());
+
+        ClientDTO dto2 = eligibleClients.get(1);
+        assertEquals("Jane Smith", dto2.getName());
+        assertEquals(12000.0, dto2.getIncome());
     }
-} 
+}

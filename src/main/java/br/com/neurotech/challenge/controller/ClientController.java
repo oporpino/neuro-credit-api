@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import br.com.neurotech.challenge.dto.ClientRequestDTO;
 import br.com.neurotech.challenge.entity.NeurotechClient;
 import br.com.neurotech.challenge.service.ClientService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -37,7 +38,12 @@ public class ClientController {
             @ApiResponse(responseCode = "201", description = "Client created successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid client data")
     })
-    public ResponseEntity<Void> createClient(@RequestBody NeurotechClient client) {
+    public ResponseEntity<Void> createClient(@RequestBody ClientRequestDTO clientDTO) {
+        NeurotechClient client = new NeurotechClient();
+        client.setName(clientDTO.getName());
+        client.setAge(clientDTO.getAge());
+        client.setIncome(clientDTO.getIncome());
+
         String clientId = clientService.save(client);
 
         URI location = ServletUriComponentsBuilder
@@ -55,13 +61,19 @@ public class ClientController {
             @ApiResponse(responseCode = "200", description = "Client found"),
             @ApiResponse(responseCode = "404", description = "Client not found")
     })
-    public ResponseEntity<NeurotechClient> getClient(
+    public ResponseEntity<ClientRequestDTO> getClient(
             @Parameter(description = "ID of the client to retrieve", required = true) @PathVariable String id) {
         NeurotechClient client = clientService.get(id);
         if (client == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(client);
-    }
 
+        ClientRequestDTO clientDTO = new ClientRequestDTO();
+        clientDTO.setId(client.getId());
+        clientDTO.setName(client.getName());
+        clientDTO.setAge(client.getAge());
+        clientDTO.setIncome(client.getIncome());
+
+        return ResponseEntity.ok(clientDTO);
+    }
 }

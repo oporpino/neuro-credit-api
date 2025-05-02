@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.neurotech.challenge.entity.NeurotechClient;
+import br.com.neurotech.challenge.dto.ClientDTO;
+import br.com.neurotech.challenge.dto.VehicleModelDTO;
 import br.com.neurotech.challenge.entity.VehicleModel;
 import br.com.neurotech.challenge.service.CreditService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,8 +36,8 @@ public class CreditController {
     })
     public ResponseEntity<Boolean> checkCredit(
             @Parameter(description = "ID of the client to check", required = true) @PathVariable String clientId,
-            @Parameter(description = "Vehicle model to check eligibility for", required = true) @PathVariable VehicleModel vehicleModel) {
-        boolean isEligible = creditService.checkCredit(clientId, vehicleModel);
+            @Parameter(description = "Vehicle model to check eligibility for", required = true) @PathVariable VehicleModelDTO vehicleModel) {
+        boolean isEligible = creditService.checkCredit(clientId, VehicleModel.valueOf(vehicleModel.name()));
         return ResponseEntity.ok(isEligible);
     }
 
@@ -45,8 +46,8 @@ public class CreditController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "List of eligible clients retrieved successfully")
     })
-    public ResponseEntity<List<NeurotechClient>> getEligibleClientsForHatch() {
-        List<NeurotechClient> eligibleClients = creditService.findEligibleClientsForHatch();
+    public ResponseEntity<List<ClientDTO>> getEligibleClientsForHatch() {
+        List<ClientDTO> eligibleClients = creditService.findEligibleClientsForHatch();
         return ResponseEntity.ok(eligibleClients);
     }
 }

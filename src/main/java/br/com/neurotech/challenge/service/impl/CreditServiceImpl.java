@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import br.com.neurotech.challenge.dto.ClientDTO;
 import br.com.neurotech.challenge.entity.CreditTypeFactory;
 import br.com.neurotech.challenge.entity.NeurotechClient;
 import br.com.neurotech.challenge.entity.VehicleModel;
@@ -36,11 +37,17 @@ public class CreditServiceImpl implements CreditService {
     }
 
     @Override
-    public List<NeurotechClient> findEligibleClientsForHatch() {
+    public List<ClientDTO> findEligibleClientsForHatch() {
         return clientService.getAll().stream()
                 .filter(client -> {
                     Credit credit = CreditTypeFactory.getApplicableCredit(client, VehicleModel.HATCH);
                     return credit != null && credit.isEligible();
+                })
+                .map(client -> {
+                    ClientDTO dto = new ClientDTO();
+                    dto.setName(client.getName());
+                    dto.setIncome(client.getIncome());
+                    return dto;
                 })
                 .collect(Collectors.toList());
     }
