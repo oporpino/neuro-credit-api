@@ -7,6 +7,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -18,6 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.neurotech.challenge.entity.NeurotechClient;
 import br.com.neurotech.challenge.service.ClientService;
+import br.com.neurotech.challenge.service.CreditService;
 
 @WebMvcTest(ClientController.class)
 public class ClientControllerTest {
@@ -31,6 +35,9 @@ public class ClientControllerTest {
     @MockBean
     private ClientService clientService;
 
+    @MockBean
+    private CreditService creditService;
+
     @Test
     void testCreateClient() throws Exception {
         // Given
@@ -40,7 +47,7 @@ public class ClientControllerTest {
         client.setIncome(5000.0);
 
         // When/Then
-        mockMvc.perform(post("/api/client")
+        mockMvc.perform(post("/api/clients")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(client)))
                 .andExpect(status().isCreated())
@@ -58,13 +65,14 @@ public class ClientControllerTest {
         client.setIncome(5000.0);
 
         // When/Then
-        when(clientService.get(clientId)).thenReturn(client);   
+        when(clientService.get(clientId)).thenReturn(client);
 
         mockMvc.perform(get("/api/client/{id}", clientId))
-                .andExpect(status().isOk()) 
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(clientId))
                 .andExpect(jsonPath("$.name").value("Test Client"))
                 .andExpect(jsonPath("$.age").value(25))
                 .andExpect(jsonPath("$.income").value(5000.0));
     }
-} 
+
+}

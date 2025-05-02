@@ -27,13 +27,13 @@ public class ClientController {
     @PostMapping
     public ResponseEntity<Void> createClient(@RequestBody NeurotechClient client) {
         String clientId = clientService.save(client);
-        
+
         URI location = ServletUriComponentsBuilder
-            .fromCurrentRequest()
-            .path("/{id}")
-            .buildAndExpand(clientId)
-            .toUri();
-            
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(clientId)
+                .toUri();
+
         return ResponseEntity.created(location).build();
     }
 
@@ -45,4 +45,5 @@ public class ClientController {
         }
         return ResponseEntity.ok(client);
     }
-} 
+
+}
