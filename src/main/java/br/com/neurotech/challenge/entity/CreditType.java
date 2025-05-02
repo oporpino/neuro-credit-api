@@ -1,41 +1,27 @@
 package br.com.neurotech.challenge.entity;
 
+import br.com.neurotech.challenge.entity.credit.ConsignedCredit;
+import br.com.neurotech.challenge.entity.credit.Credit;
+import br.com.neurotech.challenge.entity.credit.FixedCredit;
+import br.com.neurotech.challenge.entity.credit.VariableCredit;
+
 public enum CreditType {
-    FIXED_INTEREST(5.0, 18, 25, null, null),
-    VARIABLE_INTEREST(null, 21, 65, 5000.0, 15000.0),
-    CONSIGNED(null, 65, null, null, null);
+    CONSIGNED(ConsignedCredit.class),
+    VARIABLE(VariableCredit.class),
+    FIXED(FixedCredit.class);
 
-    private final Double interestRate;
-    private final Integer minAge;
-    private final Integer maxAge;
-    private final Double minIncome;
-    private final Double maxIncome;
+    private final Class<? extends Credit> clazz;
 
-    CreditType(Double interestRate, Integer minAge, Integer maxAge, Double minIncome, Double maxIncome) {
-        this.interestRate = interestRate;
-        this.minAge = minAge;
-        this.maxAge = maxAge;
-        this.minIncome = minIncome;
-        this.maxIncome = maxIncome;
+    CreditType(Class<? extends Credit> clazz) {
+        this.clazz = clazz;
     }
 
-    public Double getInterestRate() {
-        return interestRate;
+    public Credit getInstance(NeurotechClient client, VehicleModel vehicleModel) {
+        try {
+            return clazz.getDeclaredConstructor(NeurotechClient.class, VehicleModel.class)
+                    .newInstance(client, vehicleModel);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to create instance of " + clazz, e);
+        }
     }
-
-    public Integer getMinAge() {
-        return minAge;
-    }
-
-    public Integer getMaxAge() {
-        return maxAge;
-    }
-
-    public Double getMinIncome() {
-        return minIncome;
-    }
-
-    public Double getMaxIncome() {
-        return maxIncome;
-    }
-} 
+}

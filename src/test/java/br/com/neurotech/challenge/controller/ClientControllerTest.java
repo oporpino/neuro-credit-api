@@ -1,14 +1,11 @@
 package br.com.neurotech.challenge.controller;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.mockito.Mockito.when;
-
-import java.util.Arrays;
-import java.util.List;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +44,7 @@ public class ClientControllerTest {
         client.setIncome(5000.0);
 
         // When/Then
-        mockMvc.perform(post("/api/clients")
+        mockMvc.perform(post("/api/client")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(client)))
                 .andExpect(status().isCreated())
@@ -64,15 +61,15 @@ public class ClientControllerTest {
         client.setAge(25);
         client.setIncome(5000.0);
 
-        // When/Then
         when(clientService.get(clientId)).thenReturn(client);
 
+        // When/Then
         mockMvc.perform(get("/api/client/{id}", clientId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(clientId))
-                .andExpect(jsonPath("$.name").value("Test Client"))
-                .andExpect(jsonPath("$.age").value(25))
-                .andExpect(jsonPath("$.income").value(5000.0));
+                .andExpect(jsonPath("$.name").value(client.getName()))
+                .andExpect(jsonPath("$.age").value(client.getAge()))
+                .andExpect(jsonPath("$.income").value(client.getIncome()));
     }
 
 }

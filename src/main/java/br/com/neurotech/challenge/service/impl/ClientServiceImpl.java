@@ -2,6 +2,7 @@ package br.com.neurotech.challenge.service.impl;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.stereotype.Service;
@@ -11,12 +12,15 @@ import br.com.neurotech.challenge.service.ClientService;
 
 @Service
 public class ClientServiceImpl implements ClientService {
-    
+
     // Using an in-memory map to store clients for simplicity
     private final Map<String, NeurotechClient> clients = new ConcurrentHashMap<>();
 
     @Override
     public String save(NeurotechClient client) {
+        if (client.getId() == null) {
+            client.setId(UUID.randomUUID().toString());
+        }
         clients.put(client.getId(), client);
         return client.getId();
     }
@@ -30,4 +34,4 @@ public class ClientServiceImpl implements ClientService {
     public List<NeurotechClient> getAll() {
         return List.copyOf(clients.values());
     }
-} 
+}
