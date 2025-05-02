@@ -149,4 +149,21 @@ public class CreditServiceTest {
         assertFalse(creditService.checkCredit(clientId, VehicleModel.HATCH));
         assertFalse(creditService.checkCredit(clientId, VehicleModel.SUV));
     }
+
+    @Test
+    void testCheckCreditTooYoung() {
+        // Given
+        String clientId = "test-client-id";
+        NeurotechClient client = new NeurotechClient();
+        client.setId(clientId);
+        client.setName("Test Client");
+        client.setAge(17);
+        client.setIncome(10000.0);
+
+        when(clientService.get(clientId)).thenReturn(client);
+
+        // When/Then
+        assertFalse(creditService.checkCredit(clientId, VehicleModel.HATCH));
+        assertFalse(creditService.checkCredit(clientId, VehicleModel.SUV));
+    }
 } 
