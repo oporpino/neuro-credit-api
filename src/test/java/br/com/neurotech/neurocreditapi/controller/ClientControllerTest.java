@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.neurotech.neurocreditapi.dto.ClientRequestDTO;
 import br.com.neurotech.neurocreditapi.entity.NeurotechClient;
+import br.com.neurotech.neurocreditapi.exception.ClientAlreadyExistsException;
 import br.com.neurotech.neurocreditapi.mapper.ClientMapper;
 import br.com.neurotech.neurocreditapi.service.ClientService;
 
@@ -59,6 +60,33 @@ public class ClientControllerTest {
                 .content(objectMapper.writeValueAsString(clientDTO)))
                 .andExpect(status().isCreated())
                 .andExpect(header().string("Location", "http://localhost/api/client/123"));
+    }
+
+    @Test
+    public void testCreateClient_DuplicateId_ReturnsConflict() throws Exception {
+        ClientRequestDTO clientDTO = new ClientRequestDTO();
+        clientDTO.setId("existing-id");
+        clientDTO.setName("John Doe");
+        clientDTO.setAge(25);
+        clientDTO.setIncome(10000.0);
+
+        NeurotechClient client = new NeurotechClient();
+        client.setId("existing-id");
+        client.setName("John Doe");
+        client.setAge(25);
+        client.setIncome(10000.0);
+
+        when(clientMapper.toEntity(any(ClientRequestDTO.class))).thenReturn(client);
+        when(clientService.save(any(NeurotechClient.class)))
+                .thenThrow(new ClientAlreadyExistsException("existing-id"));
+
+        mockMvc.perform(post("/api/client")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(clientDTO)))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.status").value(409))
+                .andExpect(jsonPath("$.error").value("Client already exists"))
+                .andExpect(jsonPath("$.message").value("Client with ID existing-id already exists"));
     }
 
     @Test

@@ -28,43 +28,44 @@ import jakarta.validation.Valid;
 @Tag(name = "Client Management", description = "Endpoints for managing clients")
 public class ClientController {
 
-    private final ClientService clientService;
-    private final ClientMapper clientMapper;
+        private final ClientService clientService;
+        private final ClientMapper clientMapper;
 
-    public ClientController(ClientService clientService, ClientMapper clientMapper) {
-        this.clientService = clientService;
-        this.clientMapper = clientMapper;
-    }
+        public ClientController(ClientService clientService, ClientMapper clientMapper) {
+                this.clientService = clientService;
+                this.clientMapper = clientMapper;
+        }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Create a new client", description = "Creates a new client and returns the location in the header")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Client created successfully"),
-            @ApiResponse(responseCode = "400", description = "Invalid client data")
-    })
-    public ResponseEntity<Void> createClient(@Valid @RequestBody ClientRequestDTO clientDTO) {
-        NeurotechClient client = clientMapper.toEntity(clientDTO);
-        String clientId = clientService.save(client);
+        @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+        @Operation(summary = "Create a new client", description = "Creates a new client and returns the location in the header")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "201", description = "Client created successfully"),
+                        @ApiResponse(responseCode = "400", description = "Invalid client data"),
+                        @ApiResponse(responseCode = "409", description = "Client with the given ID already exists")
+        })
+        public ResponseEntity<Void> createClient(@Valid @RequestBody ClientRequestDTO clientDTO) {
+                NeurotechClient client = clientMapper.toEntity(clientDTO);
+                String clientId = clientService.save(client);
 
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(clientId)
-                .toUri();
+                URI location = ServletUriComponentsBuilder
+                                .fromCurrentRequest()
+                                .path("/{id}")
+                                .buildAndExpand(clientId)
+                                .toUri();
 
-        return ResponseEntity.created(location).build();
-    }
+                return ResponseEntity.created(location).build();
+        }
 
-    @GetMapping("/{id}")
-    @Operation(summary = "Get client by ID", description = "Retrieves a client's information by their ID")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Client found"),
-            @ApiResponse(responseCode = "404", description = "Client not found")
-    })
-    public ResponseEntity<ClientRequestDTO> getClient(
-            @Parameter(description = "ID of the client to retrieve", required = true) @PathVariable String id) {
-        return clientService.get(id)
-                .map(client -> ResponseEntity.ok(clientMapper.toRequestDTO(client)))
-                .orElse(ResponseEntity.notFound().build());
-    }
+        @GetMapping("/{id}")
+        @Operation(summary = "Get client by ID", description = "Retrieves a client's information by their ID")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "200", description = "Client found"),
+                        @ApiResponse(responseCode = "404", description = "Client not found")
+        })
+        public ResponseEntity<ClientRequestDTO> getClient(
+                        @Parameter(description = "ID of the client to retrieve", required = true) @PathVariable String id) {
+                return clientService.get(id)
+                                .map(client -> ResponseEntity.ok(clientMapper.toRequestDTO(client)))
+                                .orElse(ResponseEntity.notFound().build());
+        }
 }
