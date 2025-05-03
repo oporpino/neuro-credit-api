@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import br.com.neurotech.neurocreditapi.config.TestConstants;
 import br.com.neurotech.neurocreditapi.entity.NeurotechClient;
 import br.com.neurotech.neurocreditapi.exception.ClientAlreadyExistsException;
 import br.com.neurotech.neurocreditapi.repository.ClientRepository;
@@ -32,8 +33,8 @@ public class ClientServiceImplTest {
         // Given
         NeurotechClient client = new NeurotechClient();
         client.setName("John Doe");
-        client.setAge(25);
-        client.setIncome(5000.0);
+        client.setAge(TestConstants.Client.AGE_25);
+        client.setIncome(TestConstants.Client.INCOME_5000);
 
         when(clientRepository.save(any(NeurotechClient.class))).thenReturn(client);
 
@@ -51,8 +52,8 @@ public class ClientServiceImplTest {
         NeurotechClient client = new NeurotechClient();
         client.setId(existingId);
         client.setName("John Doe");
-        client.setAge(25);
-        client.setIncome(5000.0);
+        client.setAge(TestConstants.Client.AGE_25);
+        client.setIncome(TestConstants.Client.INCOME_5000);
 
         when(clientRepository.existsById(existingId)).thenReturn(true);
 
@@ -67,8 +68,8 @@ public class ClientServiceImplTest {
         NeurotechClient client = new NeurotechClient();
         client.setId(providedId);
         client.setName("John Doe");
-        client.setAge(25);
-        client.setIncome(5000.0);
+        client.setAge(TestConstants.Client.AGE_25);
+        client.setIncome(TestConstants.Client.INCOME_5000);
 
         when(clientRepository.existsById(providedId)).thenReturn(false);
         when(clientRepository.save(any(NeurotechClient.class))).thenReturn(client);
@@ -85,8 +86,8 @@ public class ClientServiceImplTest {
         // Given
         NeurotechClient client = new NeurotechClient();
         client.setName("Jane Doe");
-        client.setAge(30);
-        client.setIncome(10000.0);
+        client.setAge(TestConstants.Client.AGE_30);
+        client.setIncome(TestConstants.Client.INCOME_10000);
         String clientId = "test-id";
         client.setId(clientId);
 

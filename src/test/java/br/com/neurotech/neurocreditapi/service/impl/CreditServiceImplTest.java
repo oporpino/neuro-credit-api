@@ -16,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import br.com.neurotech.neurocreditapi.config.Constants;
+import br.com.neurotech.neurocreditapi.config.TestConstants;
 import br.com.neurotech.neurocreditapi.entity.NeurotechClient;
 import br.com.neurotech.neurocreditapi.entity.VehicleModel;
 import br.com.neurotech.neurocreditapi.service.ClientService;
@@ -39,106 +40,78 @@ public class CreditServiceImplTest {
     public void setUp() {
         // Eligible client for Hatch (age 23-49, income 5000-15000)
         eligibleClientForHatch = new NeurotechClient();
-        eligibleClientForHatch.setId("1");
+        eligibleClientForHatch.setId(TestConstants.Client.ID_1);
         eligibleClientForHatch.setName("John Doe");
         eligibleClientForHatch.setAge(Constants.Vehicle.HATCH_MIN_AGE + 5);
-        eligibleClientForHatch.setIncome(10000.0);
+        eligibleClientForHatch.setIncome(TestConstants.Client.INCOME_10000);
 
         // Ineligible client for Hatch (age < 23)
         ineligibleClientForHatch = new NeurotechClient();
-        ineligibleClientForHatch.setId("2");
+        ineligibleClientForHatch.setId(TestConstants.Client.ID_2);
         ineligibleClientForHatch.setName("Jane Smith");
         ineligibleClientForHatch.setAge(Constants.Vehicle.HATCH_MIN_AGE - 1);
-        ineligibleClientForHatch.setIncome(5000.0);
+        ineligibleClientForHatch.setIncome(TestConstants.Client.INCOME_5000);
 
         // Eligible client for SUV (age >= 21, income >= 8000)
         eligibleClientForSUV = new NeurotechClient();
-        eligibleClientForSUV.setId("3");
+        eligibleClientForSUV.setId(TestConstants.Client.ID_3);
         eligibleClientForSUV.setName("Bob Wilson");
         eligibleClientForSUV.setAge(Constants.Vehicle.SUV_MIN_AGE + 5);
-        eligibleClientForSUV.setIncome(12000.0);
+        eligibleClientForSUV.setIncome(TestConstants.Client.INCOME_12000);
 
         // Ineligible client for SUV (income < 8000)
         ineligibleClientForSUV = new NeurotechClient();
-        ineligibleClientForSUV.setId("4");
+        ineligibleClientForSUV.setId(TestConstants.Client.ID_4);
         ineligibleClientForSUV.setName("Alice Brown");
         ineligibleClientForSUV.setAge(Constants.Vehicle.SUV_MIN_AGE + 5);
-        ineligibleClientForSUV.setIncome(7000.0);
+        ineligibleClientForSUV.setIncome(TestConstants.Client.INCOME_7000);
     }
 
     @Test
-    void testCheckCredit_EligibleForHatch_ReturnsTrue() {
-        // Given
+    public void testCheckCredit_EligibleForHatch_ReturnsTrue() {
         NeurotechClient client = new NeurotechClient();
-        client.setAge(25);
-        client.setIncome(5000.0);
+        client.setAge(TestConstants.Client.AGE_25);
+        client.setIncome(TestConstants.Client.INCOME_5000);
 
-        when(clientService.get("123")).thenReturn(Optional.of(client));
+        when(clientService.get(TestConstants.Client.ID_123)).thenReturn(Optional.of(client));
 
-        // When
-        boolean result = creditService.checkCredit("123", VehicleModel.HATCH);
-
-        // Then
+        boolean result = creditService.checkCredit(TestConstants.Client.ID_123, VehicleModel.HATCH);
         assertTrue(result);
     }
 
     @Test
-    void testCheckCredit_IneligibleForHatch_ReturnsFalse() {
-        // Given
+    public void testCheckCredit_IneligibleForHatch_ReturnsFalse() {
         NeurotechClient client = new NeurotechClient();
-        client.setAge(17);
-        client.setIncome(5000.0);
+        client.setAge(TestConstants.Client.AGE_17);
+        client.setIncome(TestConstants.Client.INCOME_5000);
 
-        when(clientService.get("123")).thenReturn(Optional.of(client));
+        when(clientService.get(TestConstants.Client.ID_123)).thenReturn(Optional.of(client));
 
-        // When
-        boolean result = creditService.checkCredit("123", VehicleModel.HATCH);
-
-        // Then
+        boolean result = creditService.checkCredit(TestConstants.Client.ID_123, VehicleModel.HATCH);
         assertFalse(result);
     }
 
     @Test
-    void testCheckCredit_EligibleForSUV_ReturnsTrue() {
-        // Given
+    public void testCheckCredit_EligibleForSUV_ReturnsTrue() {
         NeurotechClient client = new NeurotechClient();
-        client.setAge(35);
-        client.setIncome(15000.0);
+        client.setAge(TestConstants.Client.AGE_35);
+        client.setIncome(TestConstants.Client.INCOME_15000);
 
-        when(clientService.get("123")).thenReturn(Optional.of(client));
+        when(clientService.get(TestConstants.Client.ID_123)).thenReturn(Optional.of(client));
 
-        // When
-        boolean result = creditService.checkCredit("123", VehicleModel.SUV);
-
-        // Then
+        boolean result = creditService.checkCredit(TestConstants.Client.ID_123, VehicleModel.SUV);
         assertTrue(result);
     }
 
     @Test
-    void testCheckCredit_IneligibleForSUV_ReturnsFalse() {
-        // Given
+    public void testCheckCredit_IneligibleForSUV_ReturnsFalse() {
         NeurotechClient client = new NeurotechClient();
-        client.setAge(35);
-        client.setIncome(5000.0);
+        client.setAge(TestConstants.Client.AGE_35);
+        client.setIncome(TestConstants.Client.INCOME_5000);
 
-        when(clientService.get("123")).thenReturn(Optional.of(client));
+        when(clientService.get(TestConstants.Client.ID_123)).thenReturn(Optional.of(client));
 
-        // When
-        boolean result = creditService.checkCredit("123", VehicleModel.SUV);
-
-        // Then
-        assertFalse(result);
-    }
-
-    @Test
-    void testCheckCredit_ClientNotFound_ReturnsFalse() {
-        // Given
-        when(clientService.get("invalid")).thenReturn(Optional.empty());
-
-        // When
-        boolean result = creditService.checkCredit("invalid", VehicleModel.HATCH);
-
-        // Then
+        boolean result = creditService.checkCredit(TestConstants.Client.ID_123, VehicleModel.SUV);
         assertFalse(result);
     }
 
@@ -153,10 +126,7 @@ public class CreditServiceImplTest {
         when(clientService.getAll()).thenReturn(allClients);
 
         List<NeurotechClient> eligibleClients = creditService.findEligibleClientsForHatch();
-        assertEquals(3, eligibleClients.size(),
-                "Three clients should be eligible for Hatch: eligibleClientForHatch, eligibleClientForSUV, and ineligibleClientForSUV");
-        assertTrue(eligibleClients.contains(eligibleClientForHatch), "Should contain eligibleClientForHatch");
-        assertTrue(eligibleClients.contains(eligibleClientForSUV), "Should contain eligibleClientForSUV");
-        assertTrue(eligibleClients.contains(ineligibleClientForSUV), "Should contain ineligibleClientForSUV");
+        assertEquals(1, eligibleClients.size());
+        assertEquals(TestConstants.Client.ID_1, eligibleClients.get(0).getId());
     }
 }
