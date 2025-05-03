@@ -4,7 +4,7 @@ APP_NAME = neuro-credit-api
 ## [short-aliases] Most common commands (using docker by default) ----------------------------------------------------------
 s:      docker.start                      ### Start application on docker (alias of docker.start)
 t:      docker.server.test                ### Runs tests on docker (alias of docker.server.test) 
-sh:  	  docker.server.shell               ### Enter on shell of server container (alias of docker.server.shell)
+sh:  	docker.server.shell               ### Enter on shell of server container (alias of docker.server.shell)
 h:      help                              ### Show help (alias of help)
 
 ## [aliases] Other common commands (using docker by default) ---------------------------------------------------------------
