@@ -1,16 +1,20 @@
+version: '3.8'
 
 services:
-  server:
+  neuro-credit-api:
     build:
       context: .
       dockerfile: Dockerfile
     ports:
       - "4000:4000"
     environment:
-      SPRING_PROFILES_ACTIVE: docker
+      - SPRING_PROFILES_ACTIVE=dev
+    volumes:
+      - .:/app
+      - ~/.m2:/root/.m2
     networks:
-      - main
+      - neurocredit-network
 
 networks:
-  main:
+  neurocredit-network:
     driver: bridge
