@@ -1,37 +1,40 @@
 package br.com.neurotech.challenge.service.impl;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.neurotech.challenge.entity.NeurotechClient;
+import br.com.neurotech.challenge.repository.ClientRepository;
 import br.com.neurotech.challenge.service.ClientService;
 
 @Service
 public class ClientServiceImpl implements ClientService {
 
-    // Using an in-memory map to store clients for simplicity
-    private final Map<String, NeurotechClient> clients = new ConcurrentHashMap<>();
+    private final ClientRepository clientRepository;
+
+    @Autowired
+    public ClientServiceImpl(ClientRepository clientRepository) {
+        this.clientRepository = clientRepository;
+    }
 
     @Override
     public String save(NeurotechClient client) {
         if (client.getId() == null) {
             client.setId(UUID.randomUUID().toString());
         }
-        clients.put(client.getId(), client);
-        return client.getId();
+        return clientRepository.save(client).getId();
     }
 
     @Override
     public NeurotechClient get(String id) {
-        return clients.get(id);
+        return clientRepository.findById(id).orElse(null);
     }
 
     @Override
     public List<NeurotechClient> getAll() {
-        return List.copyOf(clients.values());
+        return clientRepository.findAll();
     }
 }
