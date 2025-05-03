@@ -14,12 +14,14 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.neurotech.challenge.dto.ClientRequestDTO;
 import br.com.neurotech.challenge.entity.NeurotechClient;
+import br.com.neurotech.challenge.mapper.ClientMapper;
 import br.com.neurotech.challenge.service.ClientService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/api/client", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -27,9 +29,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class ClientController {
 
     private final ClientService clientService;
+    private final ClientMapper clientMapper;
 
-    public ClientController(ClientService clientService) {
+    public ClientController(ClientService clientService, ClientMapper clientMapper) {
         this.clientService = clientService;
+        this.clientMapper = clientMapper;
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -38,12 +42,8 @@ public class ClientController {
             @ApiResponse(responseCode = "201", description = "Client created successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid client data")
     })
-    public ResponseEntity<Void> createClient(@RequestBody ClientRequestDTO clientDTO) {
-        NeurotechClient client = new NeurotechClient();
-        client.setName(clientDTO.getName());
-        client.setAge(clientDTO.getAge());
-        client.setIncome(clientDTO.getIncome());
-
+    public ResponseEntity<Void> createClient(@Valid @RequestBody ClientRequestDTO clientDTO) {
+        NeurotechClient client = clientMapper.toEntity(clientDTO);
         String clientId = clientService.save(client);
 
         URI location = ServletUriComponentsBuilder
@@ -68,12 +68,7 @@ public class ClientController {
             return ResponseEntity.notFound().build();
         }
 
-        ClientRequestDTO clientDTO = new ClientRequestDTO();
-        clientDTO.setId(client.getId());
-        clientDTO.setName(client.getName());
-        clientDTO.setAge(client.getAge());
-        clientDTO.setIncome(client.getIncome());
-
+        ClientRequestDTO clientDTO = clientMapper.toRequestDTO(client);
         return ResponseEntity.ok(clientDTO);
     }
 }

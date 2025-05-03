@@ -1,6 +1,7 @@
 package br.com.neurotech.challenge.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.neurotech.challenge.dto.ClientDTO;
 import br.com.neurotech.challenge.dto.VehicleModelDTO;
 import br.com.neurotech.challenge.entity.VehicleModel;
+import br.com.neurotech.challenge.mapper.ClientMapper;
+import br.com.neurotech.challenge.mapper.VehicleModelMapper;
 import br.com.neurotech.challenge.service.CreditService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -25,8 +28,17 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "Credit Evaluation", description = "Endpoints for credit evaluation and eligibility")
 public class CreditController {
 
+    private final CreditService creditService;
+    private final ClientMapper clientMapper;
+    private final VehicleModelMapper vehicleModelMapper;
+
     @Autowired
-    private CreditService creditService;
+    public CreditController(CreditService creditService, ClientMapper clientMapper,
+            VehicleModelMapper vehicleModelMapper) {
+        this.creditService = creditService;
+        this.clientMapper = clientMapper;
+        this.vehicleModelMapper = vehicleModelMapper;
+    }
 
     @GetMapping("/{clientId}/{vehicleModel}")
     @Operation(summary = "Check credit eligibility", description = "Checks if a client is eligible for credit for a specific vehicle model")
@@ -37,7 +49,8 @@ public class CreditController {
     public ResponseEntity<Boolean> checkCredit(
             @Parameter(description = "ID of the client to check", required = true) @PathVariable String clientId,
             @Parameter(description = "Vehicle model to check eligibility for", required = true) @PathVariable VehicleModelDTO vehicleModel) {
-        boolean isEligible = creditService.checkCredit(clientId, VehicleModel.valueOf(vehicleModel.name()));
+        VehicleModel model = vehicleModelMapper.toEntity(vehicleModel);
+        boolean isEligible = creditService.checkCredit(clientId, model);
         return ResponseEntity.ok(isEligible);
     }
 
@@ -47,7 +60,10 @@ public class CreditController {
             @ApiResponse(responseCode = "200", description = "List of eligible clients retrieved successfully")
     })
     public ResponseEntity<List<ClientDTO>> getEligibleClientsForHatch() {
-        List<ClientDTO> eligibleClients = creditService.findEligibleClientsForHatch();
+        List<ClientDTO> eligibleClients = creditService.findEligibleClientsForHatch()
+                .stream()
+                .map(clientMapper::toDTO)
+                .collect(Collectors.toList());
         return ResponseEntity.ok(eligibleClients);
     }
 }
