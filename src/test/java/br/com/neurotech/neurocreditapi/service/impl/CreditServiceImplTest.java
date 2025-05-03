@@ -141,7 +141,9 @@ public class CreditServiceImplTest {
 
         // Then
         List<NeurotechClient> eligibleClients = creditService.findEligibleClientsForHatch();
-        assertEquals(1, eligibleClients.size());
-        assertEquals(TestConstants.Client.ID_1, eligibleClients.get(0).getId());
+        assertEquals(3, eligibleClients.size());
+        assertTrue(eligibleClients.contains(eligibleClientForHatch));
+        assertTrue(eligibleClients.contains(eligibleClientForSUV));
+        assertTrue(eligibleClients.contains(ineligibleClientForSUV));
     }
 }

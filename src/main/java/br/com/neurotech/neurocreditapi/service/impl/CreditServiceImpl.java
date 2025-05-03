@@ -37,7 +37,8 @@ public class CreditServiceImpl implements CreditService {
         } else if (vehicleModel == VehicleModel.SUV) {
             return age >= Constants.Vehicle.SUV_MIN_AGE &&
                     age <= Constants.Credit.Variable.MAX_AGE &&
-                    income >= Constants.Income.SUV_MIN;
+                    income >= Constants.Income.SUV_MIN &&
+                    income <= Constants.Income.MAX;
         }
 
         return false;
