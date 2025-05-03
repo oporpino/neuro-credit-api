@@ -7,6 +7,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -71,7 +73,7 @@ public class ClientControllerTest {
         clientDTO.setAge(25);
         clientDTO.setIncome(10000.0);
 
-        when(clientService.get("123")).thenReturn(client);
+        when(clientService.get("123")).thenReturn(Optional.of(client));
         when(clientMapper.toRequestDTO(client)).thenReturn(clientDTO);
 
         mockMvc.perform(get("/api/client/123"))
@@ -80,6 +82,14 @@ public class ClientControllerTest {
                 .andExpect(jsonPath("$.name").value("John Doe"))
                 .andExpect(jsonPath("$.age").value(25))
                 .andExpect(jsonPath("$.income").value(10000.0));
+    }
+
+    @Test
+    public void testGetClient_InvalidId_ReturnsNotFound() throws Exception {
+        when(clientService.get("invalid")).thenReturn(Optional.empty());
+
+        mockMvc.perform(get("/api/client/invalid"))
+                .andExpect(status().isNotFound());
     }
 
     @Test

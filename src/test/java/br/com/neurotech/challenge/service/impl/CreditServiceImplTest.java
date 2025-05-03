@@ -7,27 +7,28 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import br.com.neurotech.challenge.constants.CreditConstants;
 import br.com.neurotech.challenge.entity.NeurotechClient;
 import br.com.neurotech.challenge.entity.VehicleModel;
 import br.com.neurotech.challenge.service.ClientService;
+import br.com.neurotech.challenge.service.CreditService;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 public class CreditServiceImplTest {
 
-    @Mock
-    private ClientService clientService;
+    @Autowired
+    private CreditService creditService;
 
-    @InjectMocks
-    private CreditServiceImpl creditService;
+    @MockBean
+    private ClientService clientService;
 
     private NeurotechClient eligibleClientForHatch;
     private NeurotechClient ineligibleClientForHatch;
@@ -66,33 +67,79 @@ public class CreditServiceImplTest {
     }
 
     @Test
-    public void testCheckCredit_EligibleForHatch_ReturnsTrue() {
-        when(clientService.get("1")).thenReturn(eligibleClientForHatch);
-        assertTrue(creditService.checkCredit("1", VehicleModel.HATCH));
+    void testCheckCredit_EligibleForHatch_ReturnsTrue() {
+        // Given
+        NeurotechClient client = new NeurotechClient();
+        client.setAge(25);
+        client.setIncome(5000.0);
+
+        when(clientService.get("123")).thenReturn(Optional.of(client));
+
+        // When
+        boolean result = creditService.checkCredit("123", VehicleModel.HATCH);
+
+        // Then
+        assertTrue(result);
     }
 
     @Test
-    public void testCheckCredit_IneligibleForHatch_ReturnsFalse() {
-        when(clientService.get("2")).thenReturn(ineligibleClientForHatch);
-        assertFalse(creditService.checkCredit("2", VehicleModel.HATCH));
+    void testCheckCredit_IneligibleForHatch_ReturnsFalse() {
+        // Given
+        NeurotechClient client = new NeurotechClient();
+        client.setAge(17);
+        client.setIncome(5000.0);
+
+        when(clientService.get("123")).thenReturn(Optional.of(client));
+
+        // When
+        boolean result = creditService.checkCredit("123", VehicleModel.HATCH);
+
+        // Then
+        assertFalse(result);
     }
 
     @Test
-    public void testCheckCredit_EligibleForSUV_ReturnsTrue() {
-        when(clientService.get("3")).thenReturn(eligibleClientForSUV);
-        assertTrue(creditService.checkCredit("3", VehicleModel.SUV));
+    void testCheckCredit_EligibleForSUV_ReturnsTrue() {
+        // Given
+        NeurotechClient client = new NeurotechClient();
+        client.setAge(35);
+        client.setIncome(15000.0);
+
+        when(clientService.get("123")).thenReturn(Optional.of(client));
+
+        // When
+        boolean result = creditService.checkCredit("123", VehicleModel.SUV);
+
+        // Then
+        assertTrue(result);
     }
 
     @Test
-    public void testCheckCredit_IneligibleForSUV_ReturnsFalse() {
-        when(clientService.get("4")).thenReturn(ineligibleClientForSUV);
-        assertFalse(creditService.checkCredit("4", VehicleModel.SUV));
+    void testCheckCredit_IneligibleForSUV_ReturnsFalse() {
+        // Given
+        NeurotechClient client = new NeurotechClient();
+        client.setAge(35);
+        client.setIncome(5000.0);
+
+        when(clientService.get("123")).thenReturn(Optional.of(client));
+
+        // When
+        boolean result = creditService.checkCredit("123", VehicleModel.SUV);
+
+        // Then
+        assertFalse(result);
     }
 
     @Test
-    public void testCheckCredit_ClientNotFound_ReturnsFalse() {
-        when(clientService.get("5")).thenReturn(null);
-        assertFalse(creditService.checkCredit("5", VehicleModel.HATCH));
+    void testCheckCredit_ClientNotFound_ReturnsFalse() {
+        // Given
+        when(clientService.get("invalid")).thenReturn(Optional.empty());
+
+        // When
+        boolean result = creditService.checkCredit("invalid", VehicleModel.HATCH);
+
+        // Then
+        assertFalse(result);
     }
 
     @Test

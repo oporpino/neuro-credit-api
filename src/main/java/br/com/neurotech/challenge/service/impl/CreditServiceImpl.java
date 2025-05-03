@@ -20,12 +20,9 @@ public class CreditServiceImpl implements CreditService {
 
     @Override
     public boolean checkCredit(String clientId, VehicleModel vehicleModel) {
-        NeurotechClient client = clientService.get(clientId);
-        if (client == null) {
-            return false;
-        }
-
-        return isEligibleForVehicle(client, vehicleModel);
+        return clientService.get(clientId)
+                .map(client -> isEligibleForVehicle(client, vehicleModel))
+                .orElse(false);
     }
 
     private boolean isEligibleForVehicle(NeurotechClient client, VehicleModel vehicleModel) {

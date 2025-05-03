@@ -2,6 +2,9 @@ package br.com.neurotech.challenge.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,12 +43,13 @@ public class ClientServiceTest {
         String clientId = clientService.save(client);
 
         // When
-        NeurotechClient retrievedClient = clientService.get(clientId);
+        Optional<NeurotechClient> retrievedClientOpt = clientService.get(clientId);
 
         // Then
-        assertNotNull(retrievedClient);
+        assertTrue(retrievedClientOpt.isPresent());
+        NeurotechClient retrievedClient = retrievedClientOpt.get();
         assertEquals(client.getName(), retrievedClient.getName());
         assertEquals(client.getAge(), retrievedClient.getAge());
         assertEquals(client.getIncome(), retrievedClient.getIncome());
     }
-} 
+}

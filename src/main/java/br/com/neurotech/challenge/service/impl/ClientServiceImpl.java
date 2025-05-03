@@ -1,6 +1,7 @@
 package br.com.neurotech.challenge.service.impl;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +30,8 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public NeurotechClient get(String id) {
-        return clientRepository.findById(id).orElse(null);
+    public Optional<NeurotechClient> get(String id) {
+        return clientRepository.findById(id);
     }
 
     @Override

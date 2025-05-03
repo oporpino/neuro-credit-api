@@ -63,12 +63,8 @@ public class ClientController {
     })
     public ResponseEntity<ClientRequestDTO> getClient(
             @Parameter(description = "ID of the client to retrieve", required = true) @PathVariable String id) {
-        NeurotechClient client = clientService.get(id);
-        if (client == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        ClientRequestDTO clientDTO = clientMapper.toRequestDTO(client);
-        return ResponseEntity.ok(clientDTO);
+        return clientService.get(id)
+                .map(client -> ResponseEntity.ok(clientMapper.toRequestDTO(client)))
+                .orElse(ResponseEntity.notFound().build());
     }
 }

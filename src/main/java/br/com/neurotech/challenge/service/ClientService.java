@@ -1,6 +1,7 @@
 package br.com.neurotech.challenge.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -19,7 +20,7 @@ public interface ClientService {
 	/**
 	 * Recupera um cliente baseado no seu ID
 	 */
-	NeurotechClient get(String id);
+	Optional<NeurotechClient> get(String id);
 
 	List<NeurotechClient> getAll();
 }
