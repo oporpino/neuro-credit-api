@@ -43,6 +43,7 @@ public class ClientControllerTest {
 
     @Test
     public void testCreateClient_ValidDTO_ReturnsCreated() throws Exception {
+        // Given
         ClientRequestDTO clientDTO = new ClientRequestDTO();
         clientDTO.setName("John Doe");
         clientDTO.setAge(TestConstants.Client.AGE_25);
@@ -53,9 +54,11 @@ public class ClientControllerTest {
         client.setAge(TestConstants.Client.AGE_25);
         client.setIncome(TestConstants.Client.INCOME_10000);
 
+        // When
         when(clientMapper.toEntity(any(ClientRequestDTO.class))).thenReturn(client);
         when(clientService.save(any(NeurotechClient.class))).thenReturn(TestConstants.Client.ID_123);
 
+        // Then
         mockMvc.perform(post("/api/client")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(clientDTO)))
@@ -65,6 +68,7 @@ public class ClientControllerTest {
 
     @Test
     public void testCreateClient_DuplicateId_ReturnsConflict() throws Exception {
+        // Given
         ClientRequestDTO clientDTO = new ClientRequestDTO();
         clientDTO.setId("existing-id");
         clientDTO.setName("John Doe");
@@ -77,6 +81,7 @@ public class ClientControllerTest {
         client.setAge(TestConstants.Client.AGE_25);
         client.setIncome(TestConstants.Client.INCOME_10000);
 
+        // When/Then
         when(clientMapper.toEntity(any(ClientRequestDTO.class))).thenReturn(client);
         when(clientService.save(any(NeurotechClient.class)))
                 .thenThrow(new ClientAlreadyExistsException("existing-id"));
@@ -92,6 +97,7 @@ public class ClientControllerTest {
 
     @Test
     public void testGetClient_ValidId_ReturnsClientDTO() throws Exception {
+        // Given
         NeurotechClient client = new NeurotechClient();
         client.setId(TestConstants.Client.ID_123);
         client.setName("John Doe");
@@ -104,9 +110,11 @@ public class ClientControllerTest {
         clientDTO.setAge(TestConstants.Client.AGE_25);
         clientDTO.setIncome(TestConstants.Client.INCOME_10000);
 
+        // When
         when(clientService.get(TestConstants.Client.ID_123)).thenReturn(Optional.of(client));
         when(clientMapper.toRequestDTO(client)).thenReturn(clientDTO);
 
+        // Then
         mockMvc.perform(get("/api/client/" + TestConstants.Client.ID_123))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(TestConstants.Client.ID_123))
@@ -117,17 +125,21 @@ public class ClientControllerTest {
 
     @Test
     public void testGetClient_InvalidId_ReturnsNotFound() throws Exception {
+        // Given
         when(clientService.get("invalid")).thenReturn(Optional.empty());
 
+        // When/Then
         mockMvc.perform(get("/api/client/invalid"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     public void testCreateClient_InvalidDTO_ReturnsBadRequest() throws Exception {
+        // Given
         ClientRequestDTO clientDTO = new ClientRequestDTO();
         // Missing required fields
 
+        // When/Then
         mockMvc.perform(post("/api/client")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(clientDTO)))

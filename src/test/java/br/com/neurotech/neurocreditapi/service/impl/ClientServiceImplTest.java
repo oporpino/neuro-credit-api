@@ -36,12 +36,11 @@ public class ClientServiceImplTest {
         client.setAge(TestConstants.Client.AGE_25);
         client.setIncome(TestConstants.Client.INCOME_5000);
 
+        // When
         when(clientRepository.save(any(NeurotechClient.class))).thenReturn(client);
 
-        // When
-        String clientId = clientService.save(client);
-
         // Then
+        String clientId = clientService.save(client);
         assertNotNull(clientId);
     }
 
@@ -55,9 +54,8 @@ public class ClientServiceImplTest {
         client.setAge(TestConstants.Client.AGE_25);
         client.setIncome(TestConstants.Client.INCOME_5000);
 
-        when(clientRepository.existsById(existingId)).thenReturn(true);
-
         // When/Then
+        when(clientRepository.existsById(existingId)).thenReturn(true);
         assertThrows(ClientAlreadyExistsException.class, () -> clientService.save(client));
     }
 
@@ -71,13 +69,12 @@ public class ClientServiceImplTest {
         client.setAge(TestConstants.Client.AGE_25);
         client.setIncome(TestConstants.Client.INCOME_5000);
 
+        // When
         when(clientRepository.existsById(providedId)).thenReturn(false);
         when(clientRepository.save(any(NeurotechClient.class))).thenReturn(client);
 
-        // When
-        String savedClientId = clientService.save(client);
-
         // Then
+        String savedClientId = clientService.save(client);
         assertEquals(providedId, savedClientId);
     }
 
@@ -91,12 +88,11 @@ public class ClientServiceImplTest {
         String clientId = "test-id";
         client.setId(clientId);
 
+        // When
         when(clientRepository.findById(clientId)).thenReturn(Optional.of(client));
 
-        // When
-        Optional<NeurotechClient> retrievedClientOpt = clientService.get(clientId);
-
         // Then
+        Optional<NeurotechClient> retrievedClientOpt = clientService.get(clientId);
         assertTrue(retrievedClientOpt.isPresent());
         NeurotechClient retrievedClient = retrievedClientOpt.get();
         assertEquals(client.getName(), retrievedClient.getName());
