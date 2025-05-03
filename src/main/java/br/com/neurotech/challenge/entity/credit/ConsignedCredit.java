@@ -1,6 +1,6 @@
 package br.com.neurotech.challenge.entity.credit;
 
-import br.com.neurotech.challenge.constants.CreditConstants;
+import br.com.neurotech.challenge.config.Constants;
 import br.com.neurotech.challenge.entity.NeurotechClient;
 import br.com.neurotech.challenge.entity.VehicleModel;
 
@@ -12,6 +12,6 @@ public class ConsignedCredit extends Credit {
 
     @Override
     protected boolean isTypeEligible() {
-        return client.getAge() >= CreditConstants.CONSIGNED_CREDIT_MIN_AGE;
+        return client.getAge() >= Constants.Credit.Consigned.MIN_AGE;
     }
 }

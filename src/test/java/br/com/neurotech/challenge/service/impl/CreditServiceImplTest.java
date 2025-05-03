@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import br.com.neurotech.challenge.constants.CreditConstants;
+import br.com.neurotech.challenge.config.Constants;
 import br.com.neurotech.challenge.entity.NeurotechClient;
 import br.com.neurotech.challenge.entity.VehicleModel;
 import br.com.neurotech.challenge.service.ClientService;
@@ -41,28 +41,28 @@ public class CreditServiceImplTest {
         eligibleClientForHatch = new NeurotechClient();
         eligibleClientForHatch.setId("1");
         eligibleClientForHatch.setName("John Doe");
-        eligibleClientForHatch.setAge(CreditConstants.HATCH_MIN_AGE + 5);
+        eligibleClientForHatch.setAge(Constants.Vehicle.HATCH_MIN_AGE + 5);
         eligibleClientForHatch.setIncome(10000.0);
 
         // Ineligible client for Hatch (age < 23)
         ineligibleClientForHatch = new NeurotechClient();
         ineligibleClientForHatch.setId("2");
         ineligibleClientForHatch.setName("Jane Smith");
-        ineligibleClientForHatch.setAge(CreditConstants.HATCH_MIN_AGE - 1);
+        ineligibleClientForHatch.setAge(Constants.Vehicle.HATCH_MIN_AGE - 1);
         ineligibleClientForHatch.setIncome(5000.0);
 
         // Eligible client for SUV (age >= 21, income >= 8000)
         eligibleClientForSUV = new NeurotechClient();
         eligibleClientForSUV.setId("3");
         eligibleClientForSUV.setName("Bob Wilson");
-        eligibleClientForSUV.setAge(CreditConstants.SUV_MIN_AGE + 5);
+        eligibleClientForSUV.setAge(Constants.Vehicle.SUV_MIN_AGE + 5);
         eligibleClientForSUV.setIncome(12000.0);
 
         // Ineligible client for SUV (income < 8000)
         ineligibleClientForSUV = new NeurotechClient();
         ineligibleClientForSUV.setId("4");
         ineligibleClientForSUV.setName("Alice Brown");
-        ineligibleClientForSUV.setAge(CreditConstants.SUV_MIN_AGE + 5);
+        ineligibleClientForSUV.setAge(Constants.Vehicle.SUV_MIN_AGE + 5);
         ineligibleClientForSUV.setIncome(7000.0);
     }
 

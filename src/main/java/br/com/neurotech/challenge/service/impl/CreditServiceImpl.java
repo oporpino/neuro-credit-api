@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.neurotech.challenge.constants.CreditConstants;
+import br.com.neurotech.challenge.config.Constants;
 import br.com.neurotech.challenge.entity.NeurotechClient;
 import br.com.neurotech.challenge.entity.VehicleModel;
 import br.com.neurotech.challenge.service.ClientService;
@@ -30,14 +30,14 @@ public class CreditServiceImpl implements CreditService {
         double income = client.getIncome();
 
         if (vehicleModel == VehicleModel.HATCH) {
-            return age >= CreditConstants.HATCH_MIN_AGE &&
-                    age <= CreditConstants.HATCH_MAX_AGE &&
-                    income >= CreditConstants.MIN_INCOME &&
-                    income <= CreditConstants.MAX_INCOME;
+            return age >= Constants.Vehicle.HATCH_MIN_AGE &&
+                    age <= Constants.Vehicle.HATCH_MAX_AGE &&
+                    income >= Constants.Income.MIN &&
+                    income <= Constants.Income.MAX;
         } else if (vehicleModel == VehicleModel.SUV) {
-            return age >= CreditConstants.SUV_MIN_AGE &&
-                    age <= CreditConstants.VARIABLE_CREDIT_MAX_AGE &&
-                    income >= CreditConstants.SUV_MIN_INCOME;
+            return age >= Constants.Vehicle.SUV_MIN_AGE &&
+                    age <= Constants.Credit.Variable.MAX_AGE &&
+                    income >= Constants.Income.SUV_MIN;
         }
 
         return false;
